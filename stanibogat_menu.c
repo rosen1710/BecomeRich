@@ -8,6 +8,7 @@
  /*****MAIN MENU STUFF*****/
 /*************************/
 
+
 char Logo[25][50] = {
     "                     .........                    ",
     "               .....................              ",
@@ -61,14 +62,13 @@ void updateMainMenu(int selectedOption) {
     }
    printf("\n");
   }
-
-  if (selectedOption == 1)printf("\t\t  > Play");
+  if (selectedOption == 1)printf("\t\t\033[1;33m  > Play\033[1;0m");
   else printf("\t\t    Play");
 
-  if (selectedOption == 2)printf("  > Exit");
+  if (selectedOption == 2)printf("\033[1;33m  > Exit\033[1;0m");
   else printf("    Exit");
 
-  if (selectedOption == 3)printf("\n\n\t\t  > Add Question");
+  if (selectedOption == 3)printf("\n\n\t\t\033[1;33m  > Add Question\033[1;0m");
   else printf("\n\n\t\t    Add Question");
 }
 
@@ -142,44 +142,44 @@ void Hint5050(char* answers[], char* ans1, char* ans2, char* ans3, char* ans4){
   /*************************/
  /********GAME STUFF*******/
 /*************************/
-int difficulty=1;
+int difficulty=1, outoftime=0;
 void updateGameMenu(int selectedOption, char* ans1, char* ans2, char* ans3, char* ans4) {
   system("cls");
   printf("\n\n\n\n\n\t\t %d. Vapros koi e gamer: \n\n\n",difficulty);
   if(removeans1==0){  
-   if (selectedOption == 1)printf("\t > A. %s",ans1);
+   if (selectedOption == 1)printf("\t\033[1;33m > A. %s\033[1;0m",ans1);
    else printf("\t   A. %s",ans1);
   }else{
-   if (selectedOption == 1)printf("\t X A.\t");
+   if (selectedOption == 1)printf("\t\033[1;31m X A.\033[1;0m\t");
    else printf("\t   A.\t");
   }
   if(removeans2==0){
-   if (selectedOption == 2)printf("\t\t > B. %s",ans2);
+   if (selectedOption == 2)printf("\t\t\033[1;33m > B. %s\033[1;0m",ans2);
    else printf("\t\t   B. %s",ans2);
   }else{
-   if (selectedOption == 2)printf("\t\t X B.\t");
+   if (selectedOption == 2)printf("\t\t\033[1;31m X B.\033[1;0m\t");
    else printf("\t\t   B.\t");
   }
   if(removeans3==0){
-   if (selectedOption == 3)printf("\n\n\t > C. %s",ans3);
+   if (selectedOption == 3)printf("\n\n\t\033[1;33m > C. %s\033[1;0m",ans3);
    else printf("\n\n\t   C. %s",ans3);
   }else{
-   if (selectedOption == 3)printf("\n\n\t X C.\t");
+   if (selectedOption == 3)printf("\n\n\t\033[1;31m X C.\033[1;0m\t");
    else printf("\n\n\t   C.\t");
   }
   
   if(removeans4==0){  
-   if (selectedOption == 4)printf("\t\t > D. %s",ans4);
+   if (selectedOption == 4)printf("\t\t\033[1;33m > D. %s\033[1;0m",ans4);
    else printf("\t\t   D. %s",ans4);
   }else{
-   if (selectedOption == 4)printf("\t\t X D.");
+   if (selectedOption == 4)printf("\t\t\033[1;31m X D.\033[1;0m");
    else printf("\t\t   D.");
   }
   //Jokeri
   printf("\n\n\n\t\t\t  Hints: ");
   if (selectedOption == 5){
-   if(is5050used==1) printf("\n\n\t X 50/50");
-   else printf("\n\n\t > 50/50"); 
+   if(is5050used==1) printf("\n\n\t\033[1;31m X 50/50\033[1;0m");
+   else printf("\n\n\t\033[1;33m > 50/50\033[1;0m"); 
   }else printf("\n\n\t   50/50");
 }
 
@@ -240,6 +240,7 @@ int navigateGameMenu(char* answers[], char* ans1, char* ans2, char* ans3, char* 
    }
   }
  }while(currentTime-startTime<30);
+ outoftime=1;
  lose();
 }
 
@@ -283,11 +284,13 @@ void GameLoop(int difficulty){
      removeans2=0;
      removeans3=0;
      removeans4=0;
+     outoftime=0;
      difficulty+=1;
+
      GameLoop(difficulty);
     }
    }
-   else{lose();}
+   else{if(outoftime==0)lose();}
 
 }
  
@@ -323,8 +326,8 @@ void lose(){
 
 int main() {
  srand(time(NULL));
- Startup();
- sleep(9);
+ //Startup();
+ //sleep(9);
 
 
  int option;
