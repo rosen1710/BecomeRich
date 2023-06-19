@@ -50,7 +50,7 @@ void Startup(){
    printf("\n");
    usleep(35000);
   }
- 
+
 }
 
 void updateMainMenu(int selectedOption) {
@@ -80,9 +80,9 @@ int navigateMainMenu() {
  updateMainMenu(selectedOption);
 
  while (1) {
-  key = getch(); 
+  key = getch();
 
-  if(key==224) { 
+  if(key==224) {
    key = getch();
 
    if(key==80) {
@@ -93,7 +93,7 @@ int navigateMainMenu() {
     selectedOption=1;
     updateMainMenu(selectedOption);
 
-   }else if(key==77) { 
+   }else if(key==77) {
     selectedOption=2;
     updateMainMenu(selectedOption);
     }
@@ -111,7 +111,7 @@ int correctAnswer, is5050used=0;
 int removeans1=0,removeans2=0,removeans3=0,removeans4=0;
 
 
-void Hint5050(char* answers[], char* ans1, char* ans2, char* ans3, char* ans4){
+void Hint5050(int difficulty, char* answers[], char* ans1, char* ans2, char* ans3, char* ans4){
  int removeans=rand()%4,flag=-1,firstremove=-1;
 
  for(int i=0; i<4; i++){
@@ -133,7 +133,7 @@ void Hint5050(char* answers[], char* ans1, char* ans2, char* ans3, char* ans4){
  if(removeans==2)removeans3=1;
  if(removeans==3)removeans4=1;
  is5050used=1;
- updateGameMenu(0, ans1, ans2, ans3, ans4);
+ updateGameMenu(difficulty, 0, ans1, ans2, ans3, ans4);
 }
 
 
@@ -142,11 +142,12 @@ void Hint5050(char* answers[], char* ans1, char* ans2, char* ans3, char* ans4){
   /*************************/
  /********GAME STUFF*******/
 /*************************/
-int difficulty=1, outoftime=0;
-void updateGameMenu(int selectedOption, char* ans1, char* ans2, char* ans3, char* ans4) {
+int outoftime=0;
+
+void updateGameMenu(int difficulty, int selectedOption, char* ans1, char* ans2, char* ans3, char* ans4) {
   system("cls");
-  printf("\n\n\n\n\n\t\t %d. Vapros koi e gamer: \n\n\n",difficulty);
-  if(removeans1==0){  
+  printf("\n\n\n\n\n\t\t %d. Vapros Koi veren: \n\n\n",difficulty);
+  if(removeans1==0){
    if (selectedOption == 1)printf("\t\033[1;33m > A. %s\033[1;0m",ans1);
    else printf("\t   A. %s",ans1);
   }else{
@@ -167,8 +168,8 @@ void updateGameMenu(int selectedOption, char* ans1, char* ans2, char* ans3, char
    if (selectedOption == 3)printf("\n\n\t\033[1;31m X C.\033[1;0m\t");
    else printf("\n\n\t   C.\t");
   }
-  
-  if(removeans4==0){  
+
+  if(removeans4==0){
    if (selectedOption == 4)printf("\t\t\033[1;33m > D. %s\033[1;0m",ans4);
    else printf("\t\t   D. %s",ans4);
   }else{
@@ -176,18 +177,19 @@ void updateGameMenu(int selectedOption, char* ans1, char* ans2, char* ans3, char
    else printf("\t\t   D.");
   }
   //Jokeri
-  printf("\n\n\n\t\t\t  Hints: ");
+  printf("\n\n\n\t\t\tHints: ");
   if (selectedOption == 5){
    if(is5050used==1) printf("\n\n\t\033[1;31m X 50/50\033[1;0m");
-   else printf("\n\n\t\033[1;33m > 50/50\033[1;0m"); 
+   else printf("\n\n\t\033[1;33m > 50/50\033[1;0m");
   }else printf("\n\n\t   50/50");
 }
 
-int navigateGameMenu(char* answers[], char* ans1, char* ans2, char* ans3, char* ans4) {
+
+int navigateGameMenu(int difficulty, char* answers[], char* ans1, char* ans2, char* ans3, char* ans4) {
   int selectedOption = 1;
 
-  
-  updateGameMenu(selectedOption, ans1, ans2, ans3, ans4);
+
+  updateGameMenu(difficulty,selectedOption, ans1, ans2, ans3, ans4);
   int key;
 
   time_t startTime=time(NULL);
@@ -197,9 +199,9 @@ int navigateGameMenu(char* answers[], char* ans1, char* ans2, char* ans3, char* 
   currentTime=time(NULL);
   key = getch();
 
-  if(key==224) { 
+  if(key==224) {
    key = getch();
-  
+
    if(key==80) {
     if(selectedOption == 3 || selectedOption == 4) selectedOption=5;
 
@@ -211,16 +213,16 @@ int navigateGameMenu(char* answers[], char* ans1, char* ans2, char* ans3, char* 
     else if(selectedOption == 4) selectedOption=2;
 
     if(selectedOption == 5) selectedOption=3;
-  
+
    }else if(key==75) {
     if(selectedOption == 2) selectedOption=1;
     else if(selectedOption == 4) selectedOption=3;
 
-   }else if(key==77) { 
+   }else if(key==77) {
     if(selectedOption == 1) selectedOption=2;
     else if(selectedOption == 3) selectedOption=4;
     }
-   updateGameMenu(selectedOption, ans1, ans2, ans3, ans4);
+   updateGameMenu(difficulty,selectedOption, ans1, ans2, ans3, ans4);
 
   }else if(key==13){
     if((selectedOption==1 && removeans1==0)
@@ -230,13 +232,13 @@ int navigateGameMenu(char* answers[], char* ans1, char* ans2, char* ans3, char* 
     ||(selectedOption>4)){
     if(selectedOption==5){
      if(is5050used==0){
-      Hint5050(answers, ans1, ans2, ans3, ans4);
+      Hint5050(difficulty,answers, ans1, ans2, ans3, ans4);
      }
     }else{
-     return selectedOption; 
+     return selectedOption;
     }
-   
-   
+
+
    }
   }
  }while(currentTime-startTime<30);
@@ -250,10 +252,10 @@ void GameLoop(int difficulty){
 
   int playerAnswer;
   //here would be the system to get the question&answers from the file
-  char* correctans="gamer";
-  char* ans1="game";
-  char* ans2="gaming";
-  char* ans3="games";
+  char* correctans="tozi";
+  char* ans1="tova";
+  char* ans2="tuk";
+  char* ans3="tuka";
   char* answers[4]={NULL};
 
   int ansrand=rand()%4;
@@ -272,9 +274,9 @@ void GameLoop(int difficulty){
   while(answers[ansrand]!=NULL)ansrand=rand()%4;
   answers[ansrand]=ans3;
 
-  
-   playerAnswer=navigateGameMenu(answers,answers[0],answers[1],answers[2],answers[3]);
-   
+
+   playerAnswer=navigateGameMenu(difficulty, answers,answers[0],answers[1],answers[2],answers[3]);
+
    if(playerAnswer==correctAnswer){
     if(difficulty==10){ winner();}
     else{
@@ -286,15 +288,14 @@ void GameLoop(int difficulty){
      removeans4=0;
      outoftime=0;
      difficulty+=1;
-
      GameLoop(difficulty);
     }
    }
    else{if(outoftime==0)lose();}
 
 }
- 
- 
+
+
 
   /*************************/
  /******WIN/LOSE STUFF*****/
@@ -303,12 +304,14 @@ int win=0;
 
 void winner(){
  win=1;
+ int key;
  system("start /min winner.wav");
  system("cls");
  printf("\n\n\n\n\n\n\n\t Ti pobedi!!!!!! stana BOGAT!!!!!!! \n\n\n");
  sleep(20);
  printf("\n\t\t    > Exit?");
- getchar();
+
+ while(key!=13)key = getch();
 }
 
 
@@ -326,17 +329,24 @@ void lose(){
 
 int main() {
  srand(time(NULL));
- //Startup();
- //sleep(9);
+ Startup();
+ sleep(9);
 
 
- int option;
+ int option,difficulty=1;
 
  while(win==0){
   option=navigateMainMenu();
   if(option==1)GameLoop(difficulty);
   if(option==2) return 0;
   if(option==3) return 0;
+     removeans1=0;
+     removeans2=0;
+     removeans3=0;
+     removeans4=0;
+     outoftime=0;
+     is5050used=0;
+     difficulty=1;
  }
  return 0;
 }
