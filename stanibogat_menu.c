@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <time.h>
 
 
@@ -146,7 +145,7 @@ int outoftime=0;
 
 void updateGameMenu(int difficulty, int selectedOption, char* ans1, char* ans2, char* ans3, char* ans4) {
   system("cls");
-  printf("\n\n\n\n\n\t\t %d. Vapros Koi veren: \n\n\n",difficulty);
+  printf("\n\n\n\n\n\t\t    %d. 2+6(5+4): \n\n\n",difficulty);
   if(removeans1==0){
    if (selectedOption == 1)printf("\t\033[1;33m > A. %s\033[1;0m",ans1);
    else printf("\t   A. %s",ans1);
@@ -252,10 +251,10 @@ void GameLoop(int difficulty){
 
   int playerAnswer;
   //here would be the system to get the question&answers from the file
-  char* correctans="tozi";
-  char* ans1="tova";
-  char* ans2="tuk";
-  char* ans3="tuka";
+  char* correctans="56";
+  char* ans1="72";
+  char* ans2="16";
+  char* ans3="39";
   char* answers[4]={NULL};
 
   int ansrand=rand()%4;
