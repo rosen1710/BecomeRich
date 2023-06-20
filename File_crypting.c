@@ -28,6 +28,18 @@ struct Question
     struct Node* next;
 }; */
 
+struct Question init_empty_question()
+{
+    struct Question q;
+    q.difficulty = 0;
+    q.name = strdup("");
+    q.correct_ans = strdup("");
+    q.wrong_ans_1 = strdup("");
+    q.wrong_ans_2 = strdup("");
+    q.wrong_ans_3 = strdup("");
+    return q;
+}
+
 struct Question init_question(int difficulty, char* name, char* correct_ans, char* wrong_ans_1, char* wrong_ans_2, char* wrong_ans_3)
 {
     struct Question q;
@@ -415,7 +427,7 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
 
     for (int i = MIN_DIFFICULTY; i <= MAX_DIFFICULTY; i++)
     {
-        q = init_question(0, "", "", "", "", "");
+        q = init_empty_question();
         // printf("test difficulty: %d\n", i);
         while (get_question_from_file(&q, i, key_0, key_1, key_2, key_3) == 0)
         {
@@ -426,7 +438,7 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
 
     // for (int i = MIN_DIFFICULTY; i <= MAX_DIFFICULTY; i++)
     // {
-    //     q[i - MIN_DIFFICULTY] = init_question(0, "", "", "", "", "");
+    //     q[i - MIN_DIFFICULTY] = init_empty_question();
     //     printf("test difficulty: %d\n", i);
     //     while (get_question_from_file(&(q[i - MIN_DIFFICULTY]), i, key_0, key_1, key_2, key_3) == 0)
     //     {
@@ -439,7 +451,7 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
     return 0;
 } */
 
-void main()
+void test()
 {
     // the keys must be 0 - 32; now the correct keys are: 17, 10, 20, 6
     int key_0, key_1, key_2, key_3;
@@ -453,8 +465,8 @@ void main()
     struct Node* head = NULL;
     struct Question q;
     int res;
+    // q = init_empty_question();
     q = init_question(3, "How many dots define one plain?", "3 dots", "1 dot", "2 dots", "4 dots");
-    // q = init_question(3, "", "", "", "", "");
     // add_question_in_file(q, key_0, key_1, key_2, key_3);
 
     // // get_all_unused_questions(head, key_0, key_1, key_2, key_3);
@@ -481,4 +493,9 @@ void main()
     }
     // // print_all_questions_from_ll(head);
     // printf("end\n");
+}
+
+void main()
+{
+    test();
 }
