@@ -52,15 +52,15 @@ int addQuestion () {
 }
 
 int main () {
-    int flag; // Comment variable.
-
     addQuestion();
 
-    struct Question q = init_question(0, "", "", "", "", "");
+    int flag; // Contains state from getting question
+    
+    struct Question q = init_empty_question();
 
-    if((flag = get_question_from_file(&q, 3, 17, 10, 20, 6)) == -2) printf ("You used wrong keys!");
-    else if (flag == -5) printf("There is no question with this difficulty!");
-    else if (flag == 0) printf ("%d %s %s %s %s %s", q.difficulty, q.name, q.correct_ans, q.wrong_ans_1, q.wrong_ans_2, q.wrong_ans_3);
+    flag = get_question_from_file(&q, 3, 17, 10, 20, 6);
+    if(flag == 0) printf("\nQuestion with difficulty level %d:\n    %s\n\t%-20s\t%-20s\n\t%-20s\t%-20s\n", q.difficulty, q.name, q.correct_ans, q.wrong_ans_1, q.wrong_ans_2, q.wrong_ans_3);
+    else if (flag == -5) printf("\nThere is no unused question with the requested difficulty in the file!\n");
     
     return 0;
 }
