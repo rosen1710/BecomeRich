@@ -22,11 +22,11 @@ struct Question
     char* wrong_ans_3;
 };
 
-struct Node
+/* struct Node
 {
     struct Question q;
     struct Node* next;
-};
+}; */
 
 struct Question init_question(int difficulty, char* name, char* correct_ans, char* wrong_ans_1, char* wrong_ans_2, char* wrong_ans_3)
 {
@@ -53,7 +53,7 @@ struct Question copy_question(struct Question source_q)
 }
 
 // delete all elements in LinkedList
-void free_ll(struct Node* head)
+/* void free_ll(struct Node* head)
 {
     struct Node* iterator;
     while (head != NULL)
@@ -62,9 +62,9 @@ void free_ll(struct Node* head)
         head = head->next;
         free(iterator);
     }
-}
+} */
 
-void add_question_in_ll(struct Node** head, struct Question q)
+/* void add_question_in_ll(struct Node** head, struct Question q)
 {
     struct Node* new_node = (struct Node*) calloc(1, sizeof(struct Node));
 
@@ -87,9 +87,9 @@ void add_question_in_ll(struct Node** head, struct Question q)
         
         iterator->next = new_node;
     }
-}
+} */
 
-void print_all_questions_from_ll(struct Node* head)
+/* void print_all_questions_from_ll(struct Node* head)
 {
     struct Node* iterator;
     iterator = head;
@@ -99,7 +99,7 @@ void print_all_questions_from_ll(struct Node* head)
         printf("\nQuestion with difficulty level %d:\n    %s\n\t%-20s\t%-20s\n\t%-20s\t%-20s\n", iterator->q.difficulty, iterator->q.name, iterator->q.correct_ans, iterator->q.wrong_ans_1, iterator->q.wrong_ans_2, iterator->q.wrong_ans_3);
         iterator = iterator->next;
     }
-}
+} */
 
 // the keys must be 0 - 32
 char* encrypt(char* text, int key_0, int key_1, int key_2, int key_3)
@@ -367,7 +367,7 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
     return -5;
 }
 
-void overwrite_all_questions_in_file(struct Node* head, int key_0, int key_1, int key_2, int key_3)
+/* void overwrite_all_questions_in_file(struct Node* head, int key_0, int key_1, int key_2, int key_3)
 {
     FILE* data_file;
     data_file = fopen(DATA_FILE_NAME, "w");
@@ -388,9 +388,9 @@ void overwrite_all_questions_in_file(struct Node* head, int key_0, int key_1, in
             iterator = iterator->next;
         }
     }
-}
+} */
 
-int get_all_unused_questions(struct Node* result_linkedlist_head, int key_0, int key_1, int key_2, int key_3)
+/* int get_all_unused_questions(struct Node* result_linkedlist_head, int key_0, int key_1, int key_2, int key_3)
 {
     if (load_file(key_0, key_1, key_2, key_3) == -2)
     {
@@ -422,11 +422,22 @@ int get_all_unused_questions(struct Node* result_linkedlist_head, int key_0, int
             add_question_in_ll(&result_linkedlist_head, q);
         }
     }
+    // struct Question q[1 + MAX_DIFFICULTY - MIN_DIFFICULTY];
+
+    // for (int i = MIN_DIFFICULTY; i <= MAX_DIFFICULTY; i++)
+    // {
+    //     q[i - MIN_DIFFICULTY] = init_question(0, "", "", "", "", "");
+    //     printf("test difficulty: %d\n", i);
+    //     while (get_question_from_file(&(q[i - MIN_DIFFICULTY]), i, key_0, key_1, key_2, key_3) == 0)
+    //     {
+    //         add_question_in_ll(&result_linkedlist_head, q[i - MIN_DIFFICULTY]);
+    //     }
+    // }
 
     overwrite_all_questions_in_file(result_linkedlist_head, key_0, key_1, key_2, key_3);
 
     return 0;
-}
+} */
 
 void main()
 {
@@ -443,10 +454,13 @@ void main()
     struct Question q;
     int res;
     q = init_question(3, "How many dots define one plain?", "3 dots", "1 dot", "2 dots", "4 dots");
-    add_question_in_file(q, key_0, key_1, key_2, key_3);
-    // get_all_unused_questions(head, key_0, key_1, key_2, key_3);
-    // add_question_in_ll(&head, q);
-    // overwrite_all_questions_in_file(head, key_0, key_1, key_2, key_3);
+    // q = init_question(3, "", "", "", "", "");
+    // add_question_in_file(q, key_0, key_1, key_2, key_3);
+
+    // // get_all_unused_questions(head, key_0, key_1, key_2, key_3);
+    // // add_question_in_ll(&head, q);
+    // // overwrite_all_questions_in_file(head, key_0, key_1, key_2, key_3);
+
     if ((res = get_question_from_file(&q, 10, key_0, key_1, key_2, key_3)) == 0)
     {
         printf("\nThe question was gotten correctly!\n\n");
@@ -465,6 +479,6 @@ void main()
     {
         printf("\nThere is no unused question with the requested difficulty in the file!\n\n");
     }
-    print_all_questions_from_ll(head);
+    // // print_all_questions_from_ll(head);
     // printf("end\n");
 }
