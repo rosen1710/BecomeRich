@@ -64,55 +64,6 @@ struct Question copy_question(struct Question source_q)
     return q;
 }
 
-// delete all elements in LinkedList
-/* void free_ll(struct Node* head)
-{
-    struct Node* iterator;
-    while (head != NULL)
-    {
-        iterator = head;
-        head = head->next;
-        free(iterator);
-    }
-} */
-
-/* void add_question_in_ll(struct Node** head, struct Question q)
-{
-    struct Node* new_node = (struct Node*) calloc(1, sizeof(struct Node));
-
-	struct Node* iterator = *head;
-
-	new_node->q = copy_question(q);
-
-	new_node->next = NULL;
-
-	if (*head == NULL)
-	{
-        *head = new_node;
-	}
-    else
-    {
-        while (iterator->next != NULL)
-        {
-            iterator = iterator->next;
-        }
-        
-        iterator->next = new_node;
-    }
-} */
-
-/* void print_all_questions_from_ll(struct Node* head)
-{
-    struct Node* iterator;
-    iterator = head;
-
-    while (iterator != NULL)
-    {
-        printf("\nQuestion with difficulty level %d:\n    %s\n\t%-20s\t%-20s\n\t%-20s\t%-20s\n", iterator->q.difficulty, iterator->q.name, iterator->q.correct_ans, iterator->q.wrong_ans_1, iterator->q.wrong_ans_2, iterator->q.wrong_ans_3);
-        iterator = iterator->next;
-    }
-} */
-
 // the keys must be 0 - 32
 char* encrypt(char* text, int key_0, int key_1, int key_2, int key_3)
 {
@@ -282,31 +233,24 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
     }
 
     result_question_ptr->difficulty = difficulty;
-    // printf("testing 1 get question from file\n");
     char* text = strdup("");
     text = realloc (text, (MAX_TEXT_LENGTH + 1) * sizeof(char));
     text = strcpy(text, "");
-    // printf("testing 2 get question from file\n");
     fscanf(data_file, "%[^\n]\n", text); // reading BEGIN_FILE_MESSAGE
     decrypt(text, key_0, key_1, key_2, key_3);
-    // printf("'%s' success\n", text);
 
     int gotten_diff, i;
     long position;
     bool used;
-    fscanf(data_file, "%[^\n]\n", text);
-    // printf("before cycle: '%s'\n", text);
+    fscanf(data_file, "%[^\n]\n", text); // reading the difficulty of the first question or nothing (the text still keeps BEGIN_FILE_MESSAGE) if this is the end of the file
     while (strcmp(text, BEGIN_FILE_MESSAGE) != 0 && strcmp(text, result_question_ptr->wrong_ans_3) != 0) // && strcmp(text, "") != 0 && strcmp(text, "\n") != 0 && strcmp(text, "\0") != 0
     {
-        // printf("string: '%s'; ", text);
         decrypt(text, key_0, key_1, key_2, key_3);
-        // printf("decrypted string: '%s'; number: %d\n", text, atoi(text));
         
         gotten_diff = atoi(text);
 
         fscanf(data_file, "%[^\n]\n", text); // reading USED_QUESTION_MESSAGE or UNUSED_QUESTION_MESSAGE
         decrypt(text, key_0, key_1, key_2, key_3);
-        // printf("'%s'\n", text);
         if (strcmp(UNUSED_QUESTION_MESSAGE, text) == 0)
         {
             used = false;
@@ -326,14 +270,12 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
             strcpy(text, USED_QUESTION_MESSAGE);
             encrypt(text, key_0, key_1, key_2, key_3);
             position = ftell(data_file);
-            // fseek(data_file, -(strlen(UNUSED_QUESTION_MESSAGE) + 2), SEEK_CUR);
             fseek(data_file, position - (strlen(UNUSED_QUESTION_MESSAGE) + 2), SEEK_SET);
             for (i = 0; i < strlen(text); i++)
             {
                 fputc(text[i], data_file);
             }
             fputc('\n', data_file);
-            // fprintf(data_file, "%s\n", encrypt(strdup(USED_QUESTION_MESSAGE), key_0, key_1, key_2, key_3));
             fseek(data_file, position, SEEK_SET);
         }
         
@@ -378,6 +320,140 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
 
     return -5;
 }
+
+int mark_all_questions_as_unused(int key_0, int key_1, int key_2, int key_3)
+{
+    if (load_file(key_0, key_1, key_2, key_3) == -2)
+    {
+        return -2;
+    }
+
+    FILE* data_file;
+    data_file = fopen(DATA_FILE_NAME, "r+");
+    if (data_file == NULL)
+    {
+        exit(-1);
+    }
+
+    if (strlen(USED_QUESTION_MESSAGE) != strlen(UNUSED_QUESTION_MESSAGE))
+    {
+        printf("\nERROR: Your messages for 'used' and 'unused' question are not with the same lenght!\n\n");
+        exit(-3);
+    }
+
+    char* text = strdup("");
+    char* last_read = strdup("");
+    text = realloc (text, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    last_read = realloc (last_read, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    text = strcpy(text, "");
+    last_read = strcpy(last_read, "");
+    fscanf(data_file, "%[^\n]\n", text); // reading BEGIN_FILE_MESSAGE
+    decrypt(text, key_0, key_1, key_2, key_3);
+
+    long position;
+    bool used;
+    fscanf(data_file, "%[^\n]\n", text); // reading the difficulty of the first question or nothing (the text still keeps BEGIN_FILE_MESSAGE) if this is the end of the file
+    while (strcmp(text, BEGIN_FILE_MESSAGE) != 0 && strcmp(text, last_read) != 0) // && strcmp(text, "") != 0 && strcmp(text, "\n") != 0 && strcmp(text, "\0") != 0
+    {
+        fscanf(data_file, "%[^\n]\n", text); // reading USED_QUESTION_MESSAGE or UNUSED_QUESTION_MESSAGE
+        decrypt(text, key_0, key_1, key_2, key_3);
+        if (strcmp(UNUSED_QUESTION_MESSAGE, text) == 0)
+        {
+            used = false;
+        }
+        else if (strcmp(USED_QUESTION_MESSAGE, text) == 0)
+        {
+            used = true;
+        }
+        else
+        {
+            printf("\nERROR: Your message for 'used' or 'unused' question was not recognized!\n\n");
+            exit(-4);
+        }
+
+        if (used == true)
+        {
+            strcpy(text, UNUSED_QUESTION_MESSAGE);
+            encrypt(text, key_0, key_1, key_2, key_3);
+            position = ftell(data_file);
+            fseek(data_file, position - (strlen(USED_QUESTION_MESSAGE) + 2), SEEK_SET);
+            for (int i = 0; i < strlen(text); i++)
+            {
+                fputc(text[i], data_file);
+            }
+            fputc('\n', data_file);
+            fseek(data_file, position, SEEK_SET);
+        }
+        
+        fscanf(data_file, "%[^\n]\n", text); // reading question name
+
+        fscanf(data_file, "%[^\n]\n", text); // reading correct_ans
+
+        fscanf(data_file, "%[^\n]\n", text); // reading wrong_ans_1
+
+        fscanf(data_file, "%[^\n]\n", text); // reading wrong_ans_2
+
+        fscanf(data_file, "%[^\n]\n", text); // reading wrong_ans_3
+        decrypt(text, key_0, key_1, key_2, key_3);
+        strcpy(last_read, text);
+        
+        fscanf(data_file, "%[^\n]\n", text); // reading the next difficulty or nothing (the text still keeps last_read) if this is the end of the file
+    }
+    fclose(data_file);
+    free(last_read);
+    free(text);
+
+    return 0;
+}
+
+// delete all elements in LinkedList
+/* void free_ll(struct Node* head)
+{
+    struct Node* iterator;
+    while (head != NULL)
+    {
+        iterator = head;
+        head = head->next;
+        free(iterator);
+    }
+} */
+
+/* void add_question_in_ll(struct Node** head, struct Question q)
+{
+    struct Node* new_node = (struct Node*) calloc(1, sizeof(struct Node));
+
+	struct Node* iterator = *head;
+
+	new_node->q = copy_question(q);
+
+	new_node->next = NULL;
+
+	if (*head == NULL)
+	{
+        *head = new_node;
+	}
+    else
+    {
+        while (iterator->next != NULL)
+        {
+            iterator = iterator->next;
+        }
+        
+        iterator->next = new_node;
+    }
+} */
+
+/* void print_all_questions_from_ll(struct Node* head)
+{
+    struct Node* iterator;
+    iterator = head;
+
+    while (iterator != NULL)
+    {
+        printf("\nQuestion with difficulty level %d:\n    %s\n\t%-20s\t%-20s\n\t%-20s\t%-20s\n", iterator->q.difficulty, iterator->q.name, iterator->q.correct_ans, iterator->q.wrong_ans_1, iterator->q.wrong_ans_2, iterator->q.wrong_ans_3);
+        iterator = iterator->next;
+    }
+} */
 
 /* void overwrite_all_questions_in_file(struct Node* head, int key_0, int key_1, int key_2, int key_3)
 {
