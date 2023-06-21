@@ -190,7 +190,7 @@ int load_file(int key_0, int key_1, int key_2, int key_3)
     if (data_file == NULL)
     {
         printf("\nFile was not found");
-        // fclose(data_file);
+        fclose(data_file);
         FILE* data_file;
         data_file = fopen(DATA_FILE_NAME, "w");
         if (data_file == NULL)
@@ -213,7 +213,7 @@ int load_file(int key_0, int key_1, int key_2, int key_3)
         // printf("%s\n", decrypt(text, key_0, key_1, key_2, key_3));
         decrypt(text, key_0, key_1, key_2, key_3);
         
-        // fclose(data_file);
+        fclose(data_file);
 
         if (strcmp(BEGIN_FILE_MESSAGE, text) != 0)
         {
@@ -366,12 +366,12 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
 
         if (gotten_diff == difficulty && used == false)
         {
-            // fclose(data_file);
+            fclose(data_file);
             free(text);
             return 0;
         }
     }
-    // fclose(data_file);
+    fclose(data_file);
     free(text);
 
     // printf("\nThere is no unused question with the requested difficulty (level %d) in the file!\n\n", difficulty);
@@ -495,7 +495,7 @@ void test()
     // printf("end\n");
 }
 
-void main()
-{
-    test();
-}
+// void main()
+// {
+//     test();
+// }

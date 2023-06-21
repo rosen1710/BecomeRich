@@ -9,17 +9,7 @@
 // Returns 0 if adding is successfull; 
 // Exits with -1 if it cannot create/write in file;
 // Returns -2 if wrong keys were used;
-int addQuestion () {
-    // the keys must be 0 - 32; now the correct keys are: 17, 10, 20, 6
-    int key_0, key_1, key_2, key_3;
-    
-    do {
-        printf("Input keys [k0 k1 k2 k3]: ");
-        scanf("%d %d %d %d", &key_0, &key_1, &key_2, &key_3); // now the correct keys are: 17, 10, 20, 6
-    } while (load_file(key_0, key_1, key_2, key_3) == -2); // while the used keys are wrong
-
-    // printf("\nThe file was loaded correctly!\n\n");
-
+int addQuestion (int key_0, int key_1, int key_2, int key_3) {
     int diff;
     char name[MAX_TEXT_LENGTH];
     char correct[MAX_TEXT_LENGTH];
@@ -51,7 +41,7 @@ int addQuestion () {
     return add_question_in_file(q, key_0, key_1, key_2, key_3);
 }
 
-int main () {
+/* int main () {
     addQuestion();
 
     int flag; // Contains state from getting question
@@ -63,4 +53,4 @@ int main () {
     else if (flag == -5) printf("\nThere is no unused question with the requested difficulty in the file!\n");
     
     return 0;
-}
+} */
