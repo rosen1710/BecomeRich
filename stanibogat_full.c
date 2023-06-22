@@ -113,7 +113,7 @@ int removeanswers[4];
 
 
 void Hint5050(int difficulty, char* answers[], char* questionName, char* ans1, char* ans2, char* ans3, char* ans4) {
- int removeans = rand()%4, firstremove =  - 1;
+ int removeans = rand()%4, firstremove = - 1;
 
  while(removeans == correctAnswer - 1) removeans = rand()%4;
  if(removeans == 0)removeanswers[0] = 1;
@@ -386,35 +386,7 @@ void updateGameMenu(int difficulty, int selectedOption, char* questionName, char
    if (selectedOption == 4)printf("\t\t\033[1;31m X D.\033[1;0m");
    else printf("\t\t   D.");
   }
-  /* printf("\n\n\n\n\n\t\t %d. %s: \n\n\n", difficulty, questionName);
-  if(removeanswers[0] == 0) {
-   if (selectedOption == 1)printf("\t\033[1;33m > A. % - 40s\033[1;0m", ans1);
-   else printf("\t   A. %s", ans1);
-  }else{
-   if (selectedOption == 1)printf("\t\033[1;31m X A. % - 40s\033[1;0m    ", "");
-   else printf("\t   A.    ");
-  }
-  if(removeanswers[1] == 0) {
-   if (selectedOption == 2)printf("\t\t\033[1;33m > B. % - 40s\033[1;0m", ans2);
-   else printf("   B. %s", ans2);
-  }else{
-   if (selectedOption == 2)printf("\t\t\033[1;31m X B.\033[1;0m");
-   else printf("   B.");
-  }
-  if(removeanswers[2] == 0) {
-   if (selectedOption == 3)printf("\n\n\t\033[1;33m > C. % - 40s\033[1;0m", ans3);
-   else printf("\n\n\t   C. %s", ans3);
-  }else{
-   if (selectedOption == 3)printf("\n\n\t\033[1;31m X C. % - 40s\033[1;0m    ", "");
-   else printf("\n\n\t   C.    ");
-  }
-  if(removeanswers[3] == 0) {
-   if (selectedOption == 4)printf("\t\t\033[1;33m > D. % - 40s\033[1;0m", ans4);
-   else printf("   D. %s", ans4);
-  }else{
-   if (selectedOption == 4)printf("\t\t\033[1;31m X D.\033[1;0m");
-   else printf("   D.");
-  } */
+  
   //Jokeri
   printf("\n\n\n\t\t\tHints: ");
   if (selectedOption == 5) {
@@ -428,8 +400,6 @@ void updateGameMenu(int difficulty, int selectedOption, char* questionName, char
   }else printf("\t   Ask the Audience");
 
   if(displayresults == 1) printf("\n\n\n\t Audience opinion:    A: %d%%    B: %d%%    C: %d%%    D: %d%%", voteans[0], voteans[1], voteans[2], voteans[3]);
-
-
 }
 
 
@@ -511,16 +481,22 @@ void GameLoop(int difficulty, int key_0, int key_1, int key_2, int key_3) {
   struct Question q = init_empty_question();
   if (get_question_from_file(&q, difficulty, key_0, key_1, key_2, key_3) == - 5)
   {
-    printf("\n\n\nThere is no more unused questions with the requested difficulty in the file!\n\n");
-    exit( - 5);
+    printf("\033[0;31m\n\n\nThere is no more unused questions with the requested difficulty in the file!\n\n\033[0m");
+    exit(-5);
   }
 
-  char* questionName = q.name;
-  char* correctans = q.correct_ans;
-  char* ans1 = q.wrong_ans_1;
-  char* ans2 = q.wrong_ans_2;
-  char* ans3 = q.wrong_ans_3;
+  char* questionName = strdup(q.name);
+  char* correctans = strdup(q.correct_ans);
+  char* ans1 = strdup(q.wrong_ans_1);
+  char* ans2 = strdup(q.wrong_ans_2);
+  char* ans3 = strdup(q.wrong_ans_3);
   char* answers[4] = {NULL};
+
+  free(q.name);
+  free(q.correct_ans);
+  free(q.wrong_ans_1);
+  free(q.wrong_ans_2);
+  free(q.wrong_ans_3);
 
   int ansrand = rand()%4;
   answers[ansrand] = correctans;
@@ -573,9 +549,9 @@ void winner() {
  int key;
  system("start /min winner.wav");
  system("cls");
- printf("\n\n\n\n\n\n\n\t Ti pobedi!!!!!! stana BOGAT!!!!!!! \n\n\n");
- sleep(20);
- printf("\n\t\t    > Exit?");
+ printf("\n\n\n\n\n\n\n\t You WON!!!!!! The BIG PRIZE is YOURS!!!!!! \n\n\n");
+ sleep(10);
+ printf("\033[0;33m\n\t\t    > Exit?\033[0m");
 
  while(key != 13)key = getch();
 }
@@ -596,18 +572,18 @@ void lose() {
 int main() {
   srand(time(NULL));
   Startup();
-  //sleep(9);
 
   // the keys must be 0 - 32; now the correct keys are: 17, 10, 20, 6
   int key_0, key_1, key_2, key_3;
   do {
-    printf("Input keys [k0 k1 k2 k3]: ");
+    printf("Input keys [k0 k1 k2 k3]: \033[0;33m");
     scanf("%d %d %d %d", &key_0, &key_1, &key_2, &key_3); // now the correct keys are: 17, 10, 20, 6
+    printf("\033[0m");
   } while (load_file(key_0, key_1, key_2, key_3) == - 2); // while the used keys are wrong
 
   // mark_all_questions_as_unused(key_0, key_1, key_2, key_3);
 
-  printf("\nThe file was loaded correctly!\n\n");
+  printf("\033[0;32m\nThe file was loaded correctly!\n\n\033[0m");
 
   sleep(2);
 
@@ -617,22 +593,21 @@ int main() {
     option = navigateMainMenu();
     if(option == 1) GameLoop(difficulty, key_0, key_1, key_2, key_3);
     if(option == 2) break;
-    if(option == 3)
-    {
+    if(option == 3) {
       system("cls");
       addQuestion(key_0, key_1, key_2, key_3);
     }
 
-      for(int i = 0; i<4; i++) {
-        removeanswers[i] = 0;
-        voteans[i] = 0;
-      }
-      outoftime = 0;
-      is5050used = 0;
-      isHintPublicused = 0;
-      difficulty = 1;
-      displayresults = 0;
-      sameround = 0;
+    for(int i = 0; i<4; i++) {
+      removeanswers[i] = 0;
+      voteans[i] = 0;
+    }
+    outoftime = 0;
+    is5050used = 0;
+    isHintPublicused = 0;
+    difficulty = 1;
+    displayresults = 0;
+    sameround = 0;
  }
  return 0;
 }

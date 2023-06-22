@@ -17,24 +17,25 @@ int addQuestion (int key_0, int key_1, int key_2, int key_3) {
     char wrongTwo[MAX_TEXT_LENGTH];
     char wrongThree[MAX_TEXT_LENGTH];
 
-    printf("Input difficulty: ");
+    printf("\033[0mInput difficulty: \033[0;33m");
     scanf ("%d", &diff);
     getchar();
-    printf("Input question: ");
+    printf("\033[0mInput question: \033[0;33m");
     scanf("%[^\n]", name);
     getchar();
-    printf("Input correct answer: ");
+    printf("\033[0mInput correct answer: \033[0;33m");
     scanf("%[^\n]", correct);
     getchar();
-    printf("Input wrong answer 1: ");
+    printf("\033[0mInput wrong answer 1: \033[0;33m");
     scanf("%[^\n]", wrongOne);
     getchar();
-    printf("Input wrong answer 2: ");
+    printf("\033[0mInput wrong answer 2: \033[0;33m");
     scanf("%[^\n]", wrongTwo);
     getchar();
-    printf("Input wrong answer 3: ");
+    printf("\033[0mInput wrong answer 3: \033[0;33m");
     scanf("%[^\n]", wrongThree);
     getchar();
+    printf("\033[0m");
 
     struct Question q = init_question(diff, name, correct, wrongOne, wrongTwo, wrongThree);
 

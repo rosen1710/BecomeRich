@@ -154,7 +154,7 @@ int load_file(int key_0, int key_1, int key_2, int key_3)
         {
             fprintf(data_file, "%s\n", encrypt(strdup(BEGIN_FILE_MESSAGE), key_0, key_1, key_2, key_3));
         }
-        fclose(data_file);//
+        fclose(data_file);
         printf(", but it was created successfully!\n\n");
     }
     else
@@ -168,7 +168,7 @@ int load_file(int key_0, int key_1, int key_2, int key_3)
 
         if (strcmp(BEGIN_FILE_MESSAGE, text) != 0)
         {
-            printf("\nYou have used wrong keys!\n\n");
+            printf("\033[0;31m\nYou have used wrong keys!\n\n\033[0m");
             return -2;
         }
     }
@@ -208,7 +208,7 @@ int add_question_in_file(struct Question q, int key_0, int key_1, int key_2, int
     fprintf(data_file, "%s\n", encrypt(q.wrong_ans_2, key_0, key_1, key_2, key_3));
     fprintf(data_file, "%s\n", encrypt(q.wrong_ans_3, key_0, key_1, key_2, key_3));
     
-    fclose(data_file);//
+    fclose(data_file);
     return 0;
 }
 
@@ -231,8 +231,24 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
         printf("\nERROR: Your messages for 'used' and 'unused' question are not with the same lenght!\n\n");
         exit(-3);
     }
+    // result_question_ptr->name = strdup("");
+    // result_question_ptr->correct_ans = strdup("");
+    // result_question_ptr->wrong_ans_1 = strdup("");
+    // result_question_ptr->wrong_ans_2 = strdup("");
+    // result_question_ptr->wrong_ans_3 = strdup("");
+    result_question_ptr->name = realloc (result_question_ptr->name, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    result_question_ptr->correct_ans = realloc (result_question_ptr->correct_ans, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    result_question_ptr->wrong_ans_1 = realloc (result_question_ptr->wrong_ans_1, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    result_question_ptr->wrong_ans_2 = realloc (result_question_ptr->wrong_ans_2, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    result_question_ptr->wrong_ans_3 = realloc (result_question_ptr->wrong_ans_3, (MAX_TEXT_LENGTH + 1) * sizeof(char));
+    strcpy(result_question_ptr->name, "");
+    strcpy(result_question_ptr->correct_ans, "");
+    strcpy(result_question_ptr->wrong_ans_1, "");
+    strcpy(result_question_ptr->wrong_ans_2, "");
+    strcpy(result_question_ptr->wrong_ans_3, "");
 
     result_question_ptr->difficulty = difficulty;
+
     char* text = strdup("");
     text = realloc (text, (MAX_TEXT_LENGTH + 1) * sizeof(char));
     text = strcpy(text, "");
@@ -281,27 +297,22 @@ int get_question_from_file(struct Question* result_question_ptr, int difficulty,
         
         fscanf(data_file, "%[^\n]\n", text); // reading question name
         decrypt(text, key_0, key_1, key_2, key_3);
-        result_question_ptr->name = realloc (result_question_ptr->name, (strlen(text) + 1) * sizeof(char));
         strcpy(result_question_ptr->name, text);
 
         fscanf(data_file, "%[^\n]\n", text); // reading correct_ans
         decrypt(text, key_0, key_1, key_2, key_3);
-        result_question_ptr->correct_ans = realloc (result_question_ptr->correct_ans, (strlen(text) + 1) * sizeof(char));
         strcpy(result_question_ptr->correct_ans, text);
 
         fscanf(data_file, "%[^\n]\n", text); // reading wrong_ans_1
         decrypt(text, key_0, key_1, key_2, key_3);
-        result_question_ptr->wrong_ans_1 = realloc (result_question_ptr->wrong_ans_1, (strlen(text) + 1) * sizeof(char));
         strcpy(result_question_ptr->wrong_ans_1, text);
 
         fscanf(data_file, "%[^\n]\n", text); // reading wrong_ans_2
         decrypt(text, key_0, key_1, key_2, key_3);
-        result_question_ptr->wrong_ans_2 = realloc (result_question_ptr->wrong_ans_2, (strlen(text) + 1) * sizeof(char));
         strcpy(result_question_ptr->wrong_ans_2, text);
 
         fscanf(data_file, "%[^\n]\n", text); // reading wrong_ans_3
         decrypt(text, key_0, key_1, key_2, key_3);
-        result_question_ptr->wrong_ans_3 = realloc (result_question_ptr->wrong_ans_3, (strlen(text) + 1) * sizeof(char));
         strcpy(result_question_ptr->wrong_ans_3, text);
         
         fscanf(data_file, "%[^\n]\n", text); // reading the next difficulty or nothing (the text still keeps result_question_ptr->wrong_ans_3) if this is the end of the file
